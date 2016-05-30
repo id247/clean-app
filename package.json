@@ -2,6 +2,7 @@
   "name": "project",
   "version": "1.0.0",
   "description": "",
+  "cdn": "https://ad.csdnevnik.ru/special/staging/folder/",
   "main": "gulpfile.js",
   "dependencies": {},
   "devDependencies": {
@@ -45,9 +46,11 @@
     "webpack-config": "^4.0.0"
   },
   "scripts": {
-    "lint": "eslint src/js",   
+    "lint": "eslint src/js",
     "prod": "NODE_ENV=prod gulp prod",
-    "test": "NODE_ENV=test gulp build"
+    "test": "NODE_ENV=test gulp test",
+    "prod-html": "NODE_ENV=prod gulp prod-html",
+    "prod-css": "NODE_ENV=prod gulp prod-css"
   },
   "author": "",
   "license": "ISC"
