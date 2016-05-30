@@ -1,6 +1,6 @@
 'use strict'
 
-import app from './app';
+import Main from './components/Main';
 
 const appSettings = {
 
@@ -16,11 +16,6 @@ const appSettings = {
 		redirectUrl: '//localhost:9000/',
 		develop: true
 	}
-}
+};
 
-//start the magic
-document.addEventListener('DOMContentLoaded', () => {
-
-	app(appSettings);
-
-});   
+Main(appSettings);

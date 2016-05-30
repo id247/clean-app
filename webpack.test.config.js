@@ -15,9 +15,9 @@ module.exports = {
 	},
 	devtool: '#inline-source-map',
 	output: {
-		path: __dirname + '/dist/assets/js',
+		path: __dirname + '/production/assets/js',
 		filename: '[name].js',
-		publicPath: __dirname + '/dist/assets/js',
+		publicPath: __dirname + '/production/assets/js',
 		pathinfo: true
 	},
 
@@ -35,11 +35,15 @@ module.exports = {
 		   pathToReact,
 		],
 		loaders: [
-			{   test: /\.js$/, 
+			{	test: /\.js$/, 
+				loader: 'babel',
 				include: [
 					__dirname + '/src/js'
 				], 
-				loader: 'babel?optional[]=runtime&stage=2',
+				query: {
+					cacheDirectory: true,
+					presets: ['es2015', 'react']
+				}
 			}
 		]
 	},

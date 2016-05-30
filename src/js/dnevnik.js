@@ -1,6 +1,7 @@
 'use strict'
 
-import app from './app';
+import 'babel-polyfill';
+import Main from './components/Main';
 
 const appSettings = {
 
@@ -16,11 +17,7 @@ const appSettings = {
 		redirectUrl: '//ad.dnevnik.ru/promo/folder',
 		develop: true
 	}
-}
+};
 
-//start the magic
-document.addEventListener('DOMContentLoaded', () => {
+Main(appSettings);
 
-	app(appSettings);
-
-});   

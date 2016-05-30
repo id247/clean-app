@@ -14,9 +14,9 @@ module.exports = {
 		mosreg: './src/js/mosreg'
 	},
 	output: {
-		path: __dirname + '/dist/assets/js',
+		path: __dirname + '/production/assets/js',
 		filename: '[name].js',
-		publicPath: __dirname + '/dist/assets/js',
+		publicPath: __dirname + '/production/assets/js',
 		pathinfo: true
 	},
 
@@ -35,10 +35,14 @@ module.exports = {
 		],
 		loaders: [
 			{   test: /\.js$/, 
+				loader: 'babel',
 				include: [
 					__dirname + '/src/js'
 				], 
-				loader: 'babel?optional[]=runtime&stage=2',
+				query: {
+					cacheDirectory: true,
+					presets: ['es2015', 'react']
+				}
 			},
 			{ 	test: /\.js$/, 
 				include: [
