@@ -130,6 +130,24 @@ gulp.task('vers', function(){
 	$.revHash = require('rev-hash');
 
 	const plugins = [
+		function relativeLinks(tree) {
+			tree.match({ tag: 'a' }, function (node) {
+				const href = node.attrs && node.attrs['href'] ? node.attrs['href'] : false;
+				
+				//if no href or it is external
+				if (!href || href.indexOf('http') === 0){
+					return node;
+				}
+
+				if (href.indexOf('.html') === href.length - 5){
+					node.attrs['href'] =  href.replace('.html', '');
+				}else if (href.indexOf('assets/') === 0){
+					node.attrs['href'] =  href.replace('assets/', CDN);
+				}				
+
+				return node;
+			})
+		},
 		function imgVers(tree) {
 			tree.match({ tag: 'img' }, function (node) {
 				return setVestion(node, 'src');
@@ -164,7 +182,7 @@ gulp.task('vers', function(){
 			return node;
 		}
 
-		node.attrs[attrName]=  CDN + attr.replace('assets/', '') + '?_v=' + version;
+		node.attrs[attrName]=  attr.replace('assets/', CDN) + '?_v=' + version;
 		return node;
 	}
 
