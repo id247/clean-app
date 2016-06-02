@@ -1,19 +1,20 @@
 'use strict'
 
-import Main from './components/Main';
+import 'babel-polyfill';
+import Main from './index';
 
 const appSettings = {
 
 	API: {
-		groupId: 32880,
-		folderId: 82619,
-		server: 'staging.x.dnevnik.ru',
-		cookieName: 'local_project_token',
+		groupId: 316373,
+		folderId: 2631891,
+		server: 'staging.dnevnik.ru',
+		cookieName: 'dnevnik_project_token',
 		scope: 'Files,SocialEntityMembership',	
-		clientId: '5123975fe9eb415390fb7aa316a15e4e',
-		clienSecret: '367159aba7ba4a1e8b2483ebfea22435',
-		modalRedirectUrl: '//localhost:9000/oauth.html',
-		redirectUrl: '//localhost:9000/',
+		clientId: '3f2ab9e67e1d48248db8adf9b1fd11b1',
+		clienSecret: 'b31824a66cc24f4eb4e05ed85496dc3a',		
+		modalRedirectUrl: '//ad.dnevnik.ru/promo/oauth',
+		redirectUrl: '//ad.dnevnik.ru/promo/folder',
 		develop: true
 	}
 };

@@ -1,7 +1,7 @@
 'use strict'
 
 import 'babel-polyfill';
-import Main from './components/Main';
+import Main from './index';
 
 const appSettings = {
 

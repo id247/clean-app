@@ -211,7 +211,8 @@ gulp.task('webpack', function(callback) {
 });
 
 // BUILD
-gulp.task('server', function () {
+//var exec = require('child_process').exec;
+gulp.task('server', function (cb) {
 	$.server = require('gulp-server-livereload');
 
 	gulp.src(destFolder)
@@ -221,12 +222,54 @@ gulp.task('server', function () {
 		open: false,
 		port: 9000
 	}));
-})
+
+	// exec('node server.js', function (err, stdout, stderr) {
+ //   		console.log(stdout);
+ //    	console.log(stderr);
+ //    cb(err);
+  //});
+
+});
+
+var WebpackDevServer = require("webpack-dev-server");
+
+gulp.task("wds", function(callback) {
+    // modify some webpack config options
+    $.webpack = require('webpack');
+    $.webpackConfig = require('./webpack.config.js');
+
+    var myConfig = Object.create($.webpackConfig);
+    //myConfig.devtool = "source-map";
+    //myConfig.debug = true;
+
+    // myConfig.entry.unshift(
+    //     "webpack-dev-server/client?http://localhost:8080",
+    //     "webpack/hot/dev-server"
+    // );
+
+    // myConfig.plugins = (myConfig.plugins || []).concat(
+    //     new webpack.HotModuleReplacementPlugin()
+    // );
+
+    // Start a webpack-dev-server
+   	new WebpackDevServer($.webpack(myConfig), {
+        stats: {
+            colors: true
+        },
+        hot: true,
+        historyApiFallback: true,
+        publicPath: '/assets/js/',
+        contentBase: './dev'
+    }).listen(8080, "localhost", function(err) {
+        if(err) throw new gutil.PluginError("webpack-dev-server", err);
+        $.util.log("[webpack-dev-server]");
+    });
+});
 
 gulp.task('watch', function(){
 	gulp.watch('src/sass/**/*.scss', gulp.series('sass'));
 	gulp.watch('src/assets/**/*', gulp.series('assets'));
-	gulp.watch('src/js/**/*.js', gulp.series('webpack'));
+	//gulp.watch('src/js/**/*.js', gulp.series('webpack'));
 	gulp.watch('src/html/**/*.html', gulp.series('html'));
 });
 

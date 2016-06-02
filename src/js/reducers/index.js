@@ -1,13 +1,24 @@
-import { combineReducers } from 'redux';
+const initialState = {
+	counter: 5,
+	posts: [],
+	fetching: false,
+	user: 'Чувак',
+}
 
-import { counter } from './counter';
-import { posts } from './posts';
-import { fetching } from './fetching';
+export default function userstate(state = initialState) {
+  return state;
+}
 
-const rootReducer = combineReducers({
-	counter,
-	posts,
-	fetching
-});
+// import { combineReducers } from 'redux';
 
-export default rootReducer;
+// import { counter } from './counter';
+// import { posts } from './posts';
+// import { fetching } from './fetching';
+
+// const rootReducer = combineReducers({
+// 	counter,
+// 	posts,
+// 	fetching
+// });
+
+// export default rootReducer;
