@@ -14,13 +14,13 @@ module.exports = {
 	entry: ['babel-polyfill', './src/js'],
 	output: {
 		path: __dirname + '/production/assets/js',
-		filename: '[name].js',
+		filename: 'mosreg.js',
 		publicPath: __dirname + '/production/assets/js',
 		pathinfo: true
 	},
 
 	resolve: {
-		modulesDirectories: ['node_modules'],
+		modulesDirectories: ['node_modules', 'my_modules'],
 		extentions: ['', '.js'],
 		alias: {
 		  'react': pathToReact,
@@ -37,7 +37,8 @@ module.exports = {
 			{   test: /\.js$/, 
 				loader: 'babel',
 				include: [
-					__dirname + '/src/js'
+					__dirname + '/src/js',
+					__dirname + '/my_modules',
 				], 
 				query: {
 					cacheDirectory: true,
