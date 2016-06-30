@@ -2,7 +2,7 @@
 
 import cookies from 'js-cookie';
 
-export default function DnevnikOAuth(){
+export default (function DnevnikOAuth(){
 
 	let OAuthOptions = {
 		server: '',
@@ -139,4 +139,5 @@ export default function DnevnikOAuth(){
 		deleteToken: deleteToken,
 	}
 
-}
+})();
+

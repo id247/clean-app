@@ -1,65 +1,83 @@
 import fetch from 'isomorphic-fetch';
+import { OAuth, API } from '../api';
 
-export const INCREMENT = 'INCREMENT';
-export const DECREMENT = 'DECREMENT';
-
-export function increment(){
-	return{
-		type: INCREMENT
-	};
-};
-
-export function decrement(){
-	return{
-		type: DECREMENT
-	};
-};
-
-
-export const FETCHING_ENABLE = 'FETCHING_ENABLE';
-export const FETCHING_DISABLE = 'FETCHING_DISABLE';
-
-export function fetchingON(){
-	return{
-		type: FETCHING_ENABLE
-	};
-};
-
-export function fetchingOff(){
-	return{
-		type: FETCHING_DISABLE
-	};
-};
-
-
-export const REQUEST_POSTS = 'REQUEST_POSTS';
-export const RECEIVE_POSTS = 'RECEIVE_POSTS';
-
-export function requestPosts(subreddit) {
-	return {
-		type: REQUEST_POSTS,
-		subreddit
+// Api
+export function apiGetUser(userId) {
+	return dispatch => {	
+		API.getUserAjax(userId)
+		.then(
+			user => {
+				console.log(user);
+			}
+		)
+		.catch(
+			err => {
+				console.error(err);
+			}
+		);
 	}
-}
+};
 
-export function receivePosts(subreddit, json) {
+
+//profile
+export const PROFILE_SET_USER = 'PROFILE_SET_USER';
+export const PROFILE_UNSET_USER = 'PROFILE_UNSET_USER';
+
+
+export function profileSetUser(user) {
 	return {
-		type: RECEIVE_POSTS,
-		subreddit,
-		posts: json.data.children.map(child => child.data),
-		receivedAt: Date.now()
-  	}
-}
+		type: PROFILE_SET_USER,
+		user: user
+	}
+};
+export function profileUnsetUser() {
+	return {
+		type: PROFILE_UNSET_USER
+	}
+};
 
-export function fetchPosts(subreddit) {
-  	return dispatch => {
-  		dispatch(fetchingON());
-		dispatch(requestPosts(subreddit));
-		return fetch(`http://www.reddit.com/r/${subreddit}.json`)
-	  		.then(response => response.json())
-	  		.then(json => {
-	  			dispatch(fetchingOff());
-	  			dispatch(receivePosts(subreddit, json))
-	  		})
-  	}
-}
+export function profileLogin() {
+	return dispatch => {
+		OAuth.auth()
+		.then( 
+			() => {
+				API.setToken( OAuth.getToken());
+				dispatch(profileInit());
+			}
+		)
+		.catch( 
+			(err) => {
+				console.error(err);
+			}
+		);
+	}
+};
+export function profileLogout() {
+	return dispatch => {
+		OAuth.deleteToken();
+		dispatch(profileUnsetUser());
+	}
+};
+
+export function profileInit() {
+	return dispatch => {	
+		API.getUserAjax('me')
+		.then(
+			user => {
+				console.log(user);
+				dispatch(profileSetUser(user));
+			}
+		)
+		.catch(
+			err => {
+				console.log(err);
+				dispatch(profileUnsetUser());
+			}
+		);
+	}
+};
+
+// OAuth.init(OAuthOptions);
+
+// API.init(APIoptions);
+// API.setToken( OAuth.getToken() );

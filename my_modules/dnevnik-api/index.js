@@ -2,7 +2,7 @@
 
 import 'whatwg-fetch';
 
-export default function DnevnikAPI(){
+export default (function DnevnikAPI(){
 	
 	let APIOptions = {
 		server: '',
@@ -87,4 +87,5 @@ export default function DnevnikAPI(){
 		ajaxSend: ajaxSend,
 		getUserAjax: getUserAjax,
 	}
-}
+	
+})();

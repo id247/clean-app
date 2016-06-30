@@ -53,7 +53,8 @@
   },
   "scripts": {
     "lint": "eslint src/js",
-    "prod": "NODE_ENV=prod gulp prod",
+    "dnev": "NODE_ENV=dnevnik gulp prod",
+    "mosreg": "NODE_ENV=mosreg gulp prod",
     "test": "NODE_ENV=test gulp test",
     "prod-html": "NODE_ENV=prod gulp prod-html",
     "prod-css": "NODE_ENV=prod gulp prod-css"

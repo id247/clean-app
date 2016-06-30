@@ -7,12 +7,11 @@ var node_modules = path.resolve(__dirname, 'node_modules');
 var pathToReact = path.resolve(node_modules, 'react/dist/react.min.js');
 var pathToReactDOM = path.resolve(node_modules, 'react-dom/dist/react-dom.min.js');
 
+var appSettings = path.resolve(__dirname, 'src/js/settings/dnevnik.js');
+
 module.exports = {
 	cache: true,
-	entry: {
-		dnevnik: './src/js/dnevnik',
-		mosreg: './src/js/mosreg'
-	},
+	entry: ['babel-polyfill', './src/js'],
 	output: {
 		path: __dirname + '/production/assets/js',
 		filename: '[name].js',
@@ -25,7 +24,8 @@ module.exports = {
 		extentions: ['', '.js'],
 		alias: {
 		  'react': pathToReact,
-		  'react-dom': pathToReactDOM
+		  'react-dom': pathToReactDOM,
+		  'appSettings': appSettings
 		}
 	},
 

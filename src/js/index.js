@@ -7,13 +7,13 @@ import { Provider } from 'react-redux';
 
 import thunkMiddleware from 'redux-thunk';
 
-import App from '../components/App';
-import rootReducer from '../reducers/index';
+import App from './components/App';
+import rootReducer from './reducers/index';
 
 const defaultState = {
-	counter: 5,
-	posts: [],
-	fetching: false,
+	profile: {
+		user: false
+	},
 }
 
 const store = createStore(	rootReducer, 
@@ -23,15 +23,9 @@ const store = createStore(	rootReducer,
 							)
 						);
 
-function Main(appSettings){		
-
-	ReactDOM.render(
-		<Provider store={store}>
-			<App />
-		</Provider>, 
-		document.getElementById('app')
-	);
-	
-};
-
-export default Main;
+ReactDOM.render(
+	<Provider store={store}>
+		<App />
+	</Provider>, 
+	document.getElementById('app')
+);
