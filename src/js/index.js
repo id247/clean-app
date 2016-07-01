@@ -11,9 +11,7 @@ import App from './components/App';
 import rootReducer from './reducers/index';
 
 const defaultState = {
-	profile: {
-		user: false
-	},
+	profile: false,
 }
 
 const store = createStore(	rootReducer, 

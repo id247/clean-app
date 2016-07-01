@@ -1,22 +1,13 @@
-import { PROFILE_SET_USER, PROFILE_UNSET_USER } from '../actions';
+import * as actions from '../actions/profileActions';
 
 export function profile(state = {}, action) {
 	switch (action.type) {
-		case PROFILE_SET_USER:
-			return 	{...state, 
-						...{ 
-							user: {
-								...state.user, 
-								...action.user
-							}
-						}
-					};
-		case PROFILE_UNSET_USER:
-			return 	{...state, 
-						...{ 
-							user: false
-						}
-					};
+		case actions.PROFILE_SET_USER:
+			return 	action.user;
+		case actions.PROFILE_UNSET_USER:
+			return 	false;
+		case actions.PROFILE_SET_USER_SCORE:
+			return 	{...state, ...{score: ( state.score || 0 ) + action.score} };
 		default:
 			return state;
 	}

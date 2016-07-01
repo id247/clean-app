@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { oAuthLogin, apiGetUser, profileLogin, profileLogout, profileInit  } from '../actions';
+import * as profileActionCreators from '../actions/profileActionCreators';
+import * as apiActionCreators from '../actions/apiActionCreators';
 
 let App = React.createClass({
 
@@ -8,7 +9,7 @@ let App = React.createClass({
 		const { store } = this.context;
 		this.unsubscribe = store.subscribe( () => this.forceUpdate() );
 
-		this.props.onProfileInit();		
+		this.props.profileInit();		
 	},
 	componentDidMount: function() {
 
@@ -23,12 +24,13 @@ let App = React.createClass({
 		const { store } = this.context;
 		const state = store.getState();
 
-		const login = !this.props.profile.user ? <button onClick={this.props.onLogin}>Login</button> : <button onClick={this.props.onLogout}>Logout</button>;
+		const login = !this.props.profile ? <button onClick={this.props.profileLogin}>Login</button> : <button onClick={this.props.profileLogout}>Logout</button>;
 		
 		return (
 			<div>
 				{login}
-				<button onClick={this.props.onApiGetUser.bind(this, 100)}>get random user</button>				
+				<button onClick={this.props.apiGetUser.bind(null, 100)}>get random user</button>				
+				<button onClick={this.props.profileSetUserScore.bind(null, 100)}>set user score 100</button>				
 			</div>
 		);
 	}
@@ -46,16 +48,14 @@ const mapStateToProps = (state, ownProps) => {
 	}
 };
 
+const mapDispatchToProps = { //shorthand for mapDispatchToProps()
+	...profileActionCreators,
+	...apiActionCreators,
+};
 
 App = connect(
 	mapStateToProps,
-	{ //shorthand for mapDispatchToProps()
-		onOAuthLogin: oAuthLogin,
-		onApiGetUser: apiGetUser,
-		onProfileInit: profileInit,
-		onLogin: profileLogin,
-		onLogout: profileLogout,
-	}
+	mapDispatchToProps
 )(App);
 
 export default App;
