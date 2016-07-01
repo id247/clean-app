@@ -28,7 +28,7 @@ let App = React.createClass({
 		return (
 			<div>
 				{login}
-				<button onClick={this.props.onApiGetUser}>get random user</button>				
+				<button onClick={this.props.onApiGetUser.bind(this, 100)}>get random user</button>				
 			</div>
 		);
 	}
@@ -46,39 +46,16 @@ const mapStateToProps = (state, ownProps) => {
 	}
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => {
-	return {
-		onOAuthLogin: () => {
-			dispatch(
-				oAuthLogin()
-			)
-		},
-		onApiGetUser: () => {
-			dispatch(
-				apiGetUser(100)
-			)
-		},
-		onProfileInit: () => {
-			dispatch(
-				profileInit()
-			)
-		},
-		onLogin: () => {
-			dispatch(
-				profileLogin()
-			)
-		},
-		onLogout: () => {
-			dispatch(
-				profileLogout()
-			)
-		},
-	}
-};
 
 App = connect(
 	mapStateToProps,
-	mapDispatchToProps
+	{ //shorthand for mapDispatchToProps()
+		onOAuthLogin: oAuthLogin,
+		onApiGetUser: apiGetUser,
+		onProfileInit: profileInit,
+		onLogin: profileLogin,
+		onLogout: profileLogout,
+	}
 )(App);
 
 export default App;
