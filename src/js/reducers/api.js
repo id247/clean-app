@@ -1,4 +1,4 @@
-import * as actions from '../actions/apiActions';
+import * as actions from '../actions/api';
 
 export function posts(state = {}, action) {
 	switch (action.type) {

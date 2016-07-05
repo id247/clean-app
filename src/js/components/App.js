@@ -1,7 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import * as profileActionCreators from '../actions/profileActionCreators';
-import * as apiActionCreators from '../actions/apiActionCreators';
+import * as profileActionCreators from '../actions/profile';
+import * as apiActionCreators from '../actions/api';
+
+import Loading from '../components/Loading';
 
 let App = React.createClass({
 
@@ -25,12 +27,16 @@ let App = React.createClass({
 		const state = store.getState();
 
 		const login = !this.props.profile ? <button onClick={this.props.profileLogin}>Login</button> : <button onClick={this.props.profileLogout}>Logout</button>;
-		
+		const getUser = !this.props.profile ? null : <button onClick={this.props.apiGetUser.bind(null, 100)}>get random user</button>;
+
 		return (
 			<div>
+				
 				{login}
-				<button onClick={this.props.apiGetUser.bind(null, 100)}>get random user</button>				
-				<button onClick={this.props.profileSetUserScore.bind(null, 100)}>set user score 100</button>				
+				{getUser}
+											
+				
+				<Loading />
 			</div>
 		);
 	}
@@ -42,9 +48,8 @@ App.contextTypes = {
 };
 
 const mapStateToProps = (state, ownProps) => {
-	console.log(state);
 	return {
-		profile: state.profile
+		profile: state.profile,
 	}
 };
 

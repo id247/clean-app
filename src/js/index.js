@@ -6,18 +6,18 @@ import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 
 import thunkMiddleware from 'redux-thunk';
+import loggerMiddleware from 'redux-logger';
+import loadingMiddleware from './middlewares/loadingMiddleware';
 
 import App from './components/App';
 import rootReducer from './reducers/index';
 
-const defaultState = {
-	profile: false,
-}
 
 const store = createStore(	rootReducer, 
-							defaultState, 
 							applyMiddleware(
-								thunkMiddleware
+								thunkMiddleware,
+								loadingMiddleware,
+								loggerMiddleware({collapsed: true}),
 							)
 						);
 
