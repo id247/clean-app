@@ -1,28 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-let Loading = React.createClass({
+const Loading = (props) => (
+	<div style={{float: 'right'}}>{ props.loading ? 'Loading' : '' }</div>
+);
 
-	render: function() {
-		return (
-			<div style={{float: 'right'}}>{ this.props.loading 
-					? 'Loading'
-					: '' }
-			</div>
-		);
-	}
-
+const mapStateToProps = (state, ownProps) => ({
+	loading: state.loading,
 });
 
-const mapStateToProps = (state, ownProps) => {
-	return {
-		loading: state.loading,
-	}
-};
-
-
-Loading = connect(
-	mapStateToProps,
-)(Loading);
-
-export default Loading;
+export default connect(mapStateToProps)(Loading);

@@ -9,9 +9,8 @@ import thunkMiddleware from 'redux-thunk';
 import loggerMiddleware from 'redux-logger';
 import loadingMiddleware from './middlewares/loadingMiddleware';
 
-import App from './components/App';
+import Root from './containers/Root';
 import rootReducer from './reducers/index';
-
 
 const store = createStore(	rootReducer, 
 							applyMiddleware(
@@ -23,7 +22,7 @@ const store = createStore(	rootReducer,
 
 ReactDOM.render(
 	<Provider store={store}>
-		<App />
+		<Root />
 	</Provider>, 
 	document.getElementById('app')
 );
