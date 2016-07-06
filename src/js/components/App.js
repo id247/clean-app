@@ -11,17 +11,23 @@ class App extends React.Component {
 		this.props.profileInit();		
 	}
 
-	render() {		
-		const { profile } = this.props;
+	render() {	
+		const { profile, api } = this.props;
 
-		const login = !profile.loggedIn ? <button onClick={this.props.profileLogin} disabled={profile.loginInProgress}>Login </button> : <button onClick={this.props.profileLogout}>Logout</button>;
-		const getUser = !profile.loggedIn ? null : <button onClick={this.props.apiGetUser.bind(null, 100)}>get random user</button>;
+		const login = !profile.loggedIn ? <button onClick={this.props.profileLogin} disabled={profile.inProgress}>Login </button> : <button onClick={this.props.profileLogout}>Logout</button>;
+		const getUser = !profile.loggedIn ? null : <button onClick={this.props.apiGetUser.bind(null, 100)} disabled={profile.inProgress}>get random user</button>;
 
 		return (
 			<div>
 				
 				{login}
-				{getUser}											
+				{getUser}	
+
+				<ul>
+				{api.users && api.users.map((user, i) => (
+					<li key={i}>{user.firstName}</li>
+				))}		
+				</ul>								
 				
 				<Loading />
 			</div>
@@ -38,6 +44,7 @@ const mapStateToProps = (state, ownProps) => {
 	console.log(state);
 	return {
 		profile: state.profile,
+		api: state.api,
 	}
 };
 

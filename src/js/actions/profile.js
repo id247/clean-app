@@ -102,7 +102,7 @@ export function profileGetUser() {
 		dispatch(profileAsyncStart());
 		API.getUserAjax('me')
 		.then( user => {
-			dispatch(profileSetUser({ user: user }));
+			dispatch(profileSetUser(user));
 			dispatch(profileAsyncSuccess());
 		})
 		.catch( (err) => {

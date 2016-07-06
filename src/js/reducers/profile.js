@@ -6,7 +6,7 @@ const initialState = {
 	user: {}
 }
 
-export function profileAcync(state = false, action) {
+export function profileAsync(state = false, action) {
 	switch (action.type) {
 		case actions.PROFILE_ASYNC_START:
 			return 	true;
@@ -43,7 +43,7 @@ export function profile(state = initialState, action) {
 		case actions.PROFILE_ASYNC_START:
 		case actions.PROFILE_ASYNC_SUCCESS:
 		case actions.PROFILE_ASYNC_FAIL:
-			return 	{...state, ...{inProgress: profileAcync(state.loggedIn, action) }};
+			return 	{...state, ...{inProgress: profileAsync(state.inProgress, action) }};
 
 		case actions.PROFILE_LOGGED_IN:
 		case actions.PROFILE_LOGGED_OUT:
