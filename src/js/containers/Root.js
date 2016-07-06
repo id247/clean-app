@@ -4,7 +4,7 @@ import App from '../components/App';
 
 let Root = React.createClass({
 
-	componentWillMount: function() {
+	componentDidMount: function() {
 		const { store } = this.context;
 		this.unsubscribe = store.subscribe( () => this.forceUpdate() );
 	},

@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import * as profileActionCreators from '../actions/profile';
-import * as apiActionCreators from '../actions/api';
+import * as profileActions from '../actions/profile';
+import * as apiActions from '../actions/api';
 
 import Loading from '../components/Loading';
 
@@ -12,8 +12,10 @@ class App extends React.Component {
 	}
 
 	render() {		
-		const login = !this.props.profile ? <button onClick={this.props.profileLogin}>Login</button> : <button onClick={this.props.profileLogout}>Logout</button>;
-		const getUser = !this.props.profile ? null : <button onClick={this.props.apiGetUser.bind(null, 100)}>get random user</button>;
+		const { profile } = this.props;
+
+		const login = !profile.loggedIn ? <button onClick={this.props.profileLogin} disabled={profile.loginInProgress}>Login </button> : <button onClick={this.props.profileLogout}>Logout</button>;
+		const getUser = !profile.loggedIn ? null : <button onClick={this.props.apiGetUser.bind(null, 100)}>get random user</button>;
 
 		return (
 			<div>
@@ -33,14 +35,15 @@ App.contextTypes = {
 };
 
 const mapStateToProps = (state, ownProps) => {
+	console.log(state);
 	return {
 		profile: state.profile,
 	}
 };
 
 const mapDispatchToProps = { //shorthand for mapDispatchToProps()
-	...profileActionCreators,
-	...apiActionCreators,
+	...profileActions,
+	...apiActions,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);
