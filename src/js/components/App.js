@@ -7,21 +7,35 @@ import Loading from '../components/Loading';
 
 class App extends React.Component {
 
+	constructor(props) {
+    	super(props);
+	}
+
 	componentWillMount() {
 		this.props.profileInit();		
+	}
+
+	_getUser(event, userId){
+		const { target } = event;
+		target.disabled = true;
+		
+		this.props.apiGetUser(userId)
+		.then( () => { target.disabled = false; })
 	}
 
 	render() {	
 		const { profile, api } = this.props;
 
 		const login = !profile.loggedIn ? <button onClick={this.props.profileLogin} disabled={profile.inProgress}>Login </button> : <button onClick={this.props.profileLogout}>Logout</button>;
-		const getUser = !profile.loggedIn ? null : <button onClick={this.props.apiGetUser.bind(null, 100)} disabled={profile.inProgress}>get random user</button>;
+		const getUser1 = !profile.loggedIn ? null : <button onClick={(e) => this._getUser(e, 100)} >get random user 1</button>;
+		const getUser2 = !profile.loggedIn ? null : <button onClick={(e) => this._getUser(e, 200)} >get random user 2</button>;
 
 		return (
 			<div>
 				
 				{login}
-				{getUser}	
+				{getUser1}	
+				{getUser2}	
 
 				<ul>
 				{api.users && api.users.map((user, i) => (

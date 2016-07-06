@@ -43,7 +43,8 @@ export function apiSetUser(payload) {
 export function apiGetUser(userId) {
 	return dispatch => {	
 		dispatch(apiAsyncStart());
-		API.getUserAjax(userId)
+		
+		return API.getUserAjax(userId)
 		.then( user => {
 			console.log(user);
 			dispatch(apiSetUser(user));
@@ -54,3 +55,4 @@ export function apiGetUser(userId) {
 		});
 	}
 };
+
