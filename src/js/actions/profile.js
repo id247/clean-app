@@ -45,9 +45,12 @@ export function profileLoggedOut() {
 };
 
 export function profileLogin() {
+	console.log('df');
 	return dispatch => {
 		dispatch(profileAsyncStart());
-		OAuth.auth()
+		
+	console.log('df2');
+		return OAuth.auth()
 		.then( () => {
 			API.setToken(OAuth.getToken());
 			dispatch(profileLoggedIn());
@@ -62,7 +65,9 @@ export function profileLogin() {
 };
 
 export function profileLogout() {
+	console.log('df');
 	return dispatch => {
+		console.log('df2');
 		OAuth.deleteToken();
 		API.deleteToken();
 		dispatch(profileLoggedOut());
@@ -100,7 +105,8 @@ export function profileUnsetUser() {
 export function profileGetUser() {
 	return dispatch => {
 		dispatch(profileAsyncStart());
-		API.getUserAjax('me')
+		
+		return API.getUserAjax('me')
 		.then( user => {
 			dispatch(profileSetUser(user));
 			dispatch(profileAsyncSuccess());

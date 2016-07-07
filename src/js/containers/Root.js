@@ -1,29 +1,12 @@
 import React from 'react';
+import { Provider } from 'react-redux';
 
 import App from '../components/App';
 
-let Root = React.createClass({
-
-	componentDidMount: function() {
-		const { store } = this.context;
-		this.unsubscribe = store.subscribe( () => this.forceUpdate() );
-	},
-
-	componentWillUnmount: function() {
-		this.unsubscribe();
-	},
-
-	render: function() {
-		
-		return (
-			<App />
-		);
-	}
-
-});
-
-Root.contextTypes = {
-	store: React.PropTypes.object
-};
+const Root = ({store}) => (
+	<Provider store={store}>
+		<App />
+	</Provider>
+);
 
 export default Root;

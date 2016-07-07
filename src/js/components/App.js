@@ -1,48 +1,29 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import * as profileActions from '../actions/profile';
-import * as apiActions from '../actions/api';
 
+import Login from '../components/Login';
+import Users from '../components/Users';
 import Loading from '../components/Loading';
 
 class App extends React.Component {
 
-	constructor(props) {
-    	super(props);
-	}
-
 	componentWillMount() {
-		this.props.profileInit();		
-	}
-
-	_getUser(event, userId){
-		const { target } = event;
-		target.disabled = true;
-		
-		this.props.apiGetUser(userId)
-		.then( () => { target.disabled = false; })
+		this.props.profileActions.profileInit();		
 	}
 
 	render() {	
-		const { profile, api } = this.props;
+		const { profile } = this.props;
 
-		const login = !profile.loggedIn ? <button onClick={this.props.profileLogin} disabled={profile.inProgress}>Login </button> : <button onClick={this.props.profileLogout}>Logout</button>;
-		const getUser1 = !profile.loggedIn ? null : <button onClick={(e) => this._getUser(e, 100)} >get random user 1</button>;
-		const getUser2 = !profile.loggedIn ? null : <button onClick={(e) => this._getUser(e, 200)} >get random user 2</button>;
+		const users = !profile.loggedIn 
+							? null 
+							: <Users />;
 
 		return (
-			<div>
-				
-				{login}
-				{getUser1}	
-				{getUser2}	
-
-				<ul>
-				{api.users && api.users.map((user, i) => (
-					<li key={i}>{user.firstName}</li>
-				))}		
-				</ul>								
-				
+			<div>				
+				<Login />
+				{users}	
 				<Loading />
 			</div>
 		);
@@ -50,21 +31,12 @@ class App extends React.Component {
 
 };
 
-App.contextTypes = {
-	store: React.PropTypes.object
-};
+const mapStateToProps = (state, ownProps) => ({
+	profile: state.profile,
+});
 
-const mapStateToProps = (state, ownProps) => {
-	console.log(state);
-	return {
-		profile: state.profile,
-		api: state.api,
-	}
-};
-
-const mapDispatchToProps = { //shorthand for mapDispatchToProps()
-	...profileActions,
-	...apiActions,
-};
+const mapDispatchToProps = (dispatch, ownProps) => ({ 
+	profileActions: bindActionCreators(profileActions, dispatch),
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

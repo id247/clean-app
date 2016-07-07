@@ -43,7 +43,7 @@ export function apiSetUser(payload) {
 export function apiGetUser(userId) {
 	return dispatch => {	
 		dispatch(apiAsyncStart());
-		
+				
 		return API.getUserAjax(userId)
 		.then( user => {
 			console.log(user);
