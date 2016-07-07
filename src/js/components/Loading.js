@@ -1,10 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-const Loading = ({
-	loading
-}) => (
-	<div style={{float: 'right'}}>{ loading ? 'Loading' : '' }</div>
+const Loading = (props) => (
+	<div style={{float: 'right'}}>{ props.loading ? 'Loading' : '' }</div>
 );
 
 const mapStateToProps = (state, ownProps) => ({

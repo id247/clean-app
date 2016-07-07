@@ -1,12 +1,8 @@
+import { combineReducers } from 'redux';
+
 import * as actions from '../actions/profile';
 
-const initialState = {
-	loggedIn: false,
-	inProgress: false,
-	user: {}
-}
-
-export function profileAsync(state = false, action) {
+export function inProgress(state = false, action) {
 	switch (action.type) {
 		case actions.PROFILE_ASYNC_START:
 			return 	true;
@@ -17,7 +13,7 @@ export function profileAsync(state = false, action) {
 			return state;
 	}
 }
-export function profileLogin(state = false, action) {
+export function loggedIn(state = false, action) {
 	switch (action.type) {
 		case actions.PROFILE_LOGGED_IN:
 			return 	true;
@@ -27,7 +23,7 @@ export function profileLogin(state = false, action) {
 			return state;
 	}
 }
-export function profileUser(state = false, action) {
+export function user(state = false, action) {
 	switch (action.type) {
 		case actions.PROFILE_SET_USER:
 			return 	action.payload;			
@@ -38,22 +34,8 @@ export function profileUser(state = false, action) {
 	}
 }
 
-export function profile(state = initialState, action) {
-	switch (action.type) {
-		case actions.PROFILE_ASYNC_START:
-		case actions.PROFILE_ASYNC_SUCCESS:
-		case actions.PROFILE_ASYNC_FAIL:
-			return 	{...state, ...{inProgress: profileAsync(state.inProgress, action) }};
-
-		case actions.PROFILE_LOGGED_IN:
-		case actions.PROFILE_LOGGED_OUT:
-			return 	{...state, ...{loggedIn: profileLogin(state.loggedIn, action) }};
-			
-		case actions.PROFILE_SET_USER:
-		case actions.PROFILE_UNSET_USER:
-			return 	{...state, ...{user: profileUser(state.user, action) }};
-
-		default:
-			return state;
-	}
-}
+export const profile = combineReducers({
+	inProgress,
+	loggedIn,
+	user,
+});

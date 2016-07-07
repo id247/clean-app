@@ -26,7 +26,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
 		element.disabled = true;
 		dispatch(apiActions.apiGetUser(userId))
 		.then( () => { element.disabled = false; })
-	}
+	},
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Users);

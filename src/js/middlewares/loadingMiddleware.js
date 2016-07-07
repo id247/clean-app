@@ -18,4 +18,4 @@ const loadingMiddleware = ({dispatch}) => {
 	}
 }
 
-export default loadingMiddleware
+export default loadingMiddleware;
