@@ -8,7 +8,9 @@ import App from '../components/App';
 class Root extends React.Component {
 
 	componentWillMount() {
-		this.props.profileActions.profileInit();		
+		const { dispatch } = this.props.store;
+
+		dispatch(profileActions.profileInit());		
 	}
 
 	render() {
@@ -20,9 +22,4 @@ class Root extends React.Component {
 	}
 }
 
-const mapDispatchToProps = (dispatch, ownProps) => ({ 
-	profileActions: bindActionCreators(profileActions, dispatch),
-});
-
-
-export default connect(null, mapDispatchToProps)(Root);
+export default Root;
