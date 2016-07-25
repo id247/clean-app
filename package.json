@@ -50,14 +50,17 @@
     "rev-hash": "^1.0.0",
     "strip-loader": "^0.1.2",
     "webpack": "^1.13.1",
-    "webpack-config": "^4.0.0"
+    "webpack-config": "^4.0.0",
+    "webpack-dev-server": "^1.14.1"
   },
   "scripts": {
-    "lint": "eslint src/js",
+    "lint": "eslint src/js/**",
     "prod": "NODE_ENV=prod gulp clean; NODE_ENV=mosreg webpack; NODE_ENV=dnevnik webpack; NODE_ENV=prod gulp prod-no-js;",
-    "test": "NODE_ENV=test gulp test",
     "prod-html": "NODE_ENV=prod gulp prod-html",
-    "prod-css": "NODE_ENV=prod gulp prod-css"
+    "prod-css": "NODE_ENV=prod gulp prod-css",
+    "prod-js": "NODE_ENV=mosreg webpack; NODE_ENV=dnevnik webpack;",
+    "test": "mocha --recursive --compilers js:babel-core/register",
+    "test:watch": "npm test -- --watch"
   },
   "author": "",
   "license": "ISC"

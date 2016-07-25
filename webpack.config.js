@@ -4,7 +4,7 @@ var WebpackConfig = require('webpack-config');
  
 WebpackConfig.environment.setAll({
     env: function() {
-        return process.env.WEBPACK_ENV || process.env.NODE_ENV || 'dev';
+        return process.env.WEBPACK_ENV || process.env.NODE_ENV || 'development';
     }
 });
  

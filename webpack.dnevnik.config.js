@@ -1,21 +1,15 @@
 'use strict';
 
-var webpack = require('webpack');
 var path = require('path');
-
-var node_modules = path.resolve(__dirname, 'node_modules');
-var pathToReact = path.resolve(node_modules, 'react/dist/react.min.js');
-var pathToReactDOM = path.resolve(node_modules, 'react-dom/dist/react-dom.min.js');
-
-var appSettings = path.resolve(__dirname, 'src/js/settings/dnevnik.js');
+var webpack = require('webpack');
 
 module.exports = {
 	cache: true,
 	entry: ['babel-polyfill', './src/js'],
 	output: {
-		path: __dirname + '/production/assets/js',
+		path: path.join(__dirname, '/production/assets/js'),
 		filename: 'dnevnik.js',
-		publicPath: __dirname + '/production/assets/js',
+		publicPath: path.join(__dirname, '/production/assets/js'),
 		pathinfo: true
 	},
 
@@ -23,22 +17,18 @@ module.exports = {
 		modulesDirectories: ['node_modules', 'my_modules'],
 		extentions: ['', '.js'],
 		alias: {
-		  'react': pathToReact,
-		  'react-dom': pathToReactDOM,
-		  'appSettings': appSettings
 		}
 	},
 
 	module: {
 		noParse: [
-		   pathToReact,
 		],
 		loaders: [
 			{   test: /\.js$/, 
 				loader: 'babel',
 				include: [
-					__dirname + '/src/js',
-					__dirname + '/my_modules',
+					path.join(__dirname, '/src/js'),
+					path.join(__dirname, '/my_modules'),
 				], 
 				query: {
 					cacheDirectory: true,
@@ -47,7 +37,7 @@ module.exports = {
 			},
 			{ 	test: /\.js$/, 
 				include: [
-					__dirname + '/src/js'
+					path.join(__dirname, '/src/js'),
 				], 
 				loader: 'strip-loader?strip[]=console.log' 
 			}

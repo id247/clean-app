@@ -19,7 +19,7 @@ class App extends React.Component {
 		return (
 			<div>				
 				<Login />
-				{users}	
+				{users}
 				<Loading />
 			</div>
 		);

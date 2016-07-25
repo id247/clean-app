@@ -8,9 +8,9 @@ var watch = require('gulp-watch');
 var spritesmith = require('gulp.spritesmith');
 var posthtml = require('gulp-posthtml');
 
-var devMode = process.env.NODE_ENV || 'dev';
+var devMode = process.env.NODE_ENV || 'development';
 
-var destFolder = devMode === 'dev' ? 'dev' : 'production';
+var destFolder = devMode === 'development' ? 'dev' : 'production';
 
 var packageJson = JSON.parse(fs.readFileSync('./package.json'));
 
@@ -18,14 +18,13 @@ var CDN = packageJson.cdn;
 
 if (!CDN){
 	console.error('SET THE CDN!!!');
-	return;
 }
 
 // STYLES
 gulp.task('sass', function () {
 
 	return gulp.src('src/sass/style.scss')
-		.pipe($.if(devMode !== 'prod', $.sourcemaps.init())) 
+		.pipe($.if(devMode !== 'production', $.sourcemaps.init())) 
 		.pipe($.sass({outputStyle: 'expanded'})) 
 		.on('error', $.notify.onError())
 		.pipe($.autoprefixer({
@@ -33,7 +32,7 @@ gulp.task('sass', function () {
 			cascade: false
 		}))
 		.pipe($.cssImageDimensions())
-		.pipe($.if(devMode !== 'prod', $.sourcemaps.write())) 
+		.pipe($.if(devMode !== 'production', $.sourcemaps.write())) 
 		.pipe(gulp.dest(destFolder + '/assets/css'));  
 });
 
@@ -109,11 +108,11 @@ gulp.task('html', function(callback){
 				indent: true
 			}))
 			.on('error', $.notify.onError())
-			//.pipe($.if(devMode === 'prod', $.htmlmin({collapseWhitespace: true})))
+			.pipe($.if(devMode === 'production', $.htmlmin({collapseWhitespace: true})))
 			.pipe(gulp.dest(newDestFolder));
 	}
 	
-	if (devMode == 'dev'){
+	if (devMode == 'development'){
 		html('local');
 	}else{
 		html('mosreg');
@@ -196,20 +195,24 @@ gulp.task('vers', function(){
 });
 
 //JS
-gulp.task('webpack', function(callback) {
-	$.webpack = require('webpack');
-	$.webpackConfig = require('./webpack.config.js');
-	
-	var myConfig = Object.create($.webpackConfig);
+gulp.task('webpack-server', function(callback) {
+	var webpack = require('webpack');
+	var config = require('./webpack.config.js');
 
-	$.webpack(myConfig, 
-	function(err, stats) {
-		if(err) throw new $.util.PluginError('webpack', err);
-		$.util.log('[webpack]', stats.toString({
-			// output options
-		}));
-		callback();
+	var WebpackDevServer = require('webpack-dev-server');
+	
+	new WebpackDevServer(webpack(config), {
+	  	contentBase: config.output.path,
+	  	publicPath: config.output.publicPath,
+	  	hot: true,
+	  	historyApiFallback: true,
+	}).listen(3000, 'localhost', function (err, result) {
+	  if (err) {
+	    return console.log(err);
+	  }
+	  console.log('Listening HOT-reload server at http://localhost:3000/');
 	});
+
 });
 
 // BUILD
@@ -223,21 +226,20 @@ gulp.task('server', function () {
 		open: false,
 		port: 9000
 	}));
-})
 
-gulp.task('watch', function(){
 	gulp.watch('src/sass/**/*.scss', gulp.series('sass'));
 	gulp.watch('src/assets/**/*', gulp.series('assets'));
-	gulp.watch('src/js/**/*.js', gulp.series('webpack'));
 	gulp.watch('src/html/**/*.html', gulp.series('html'));
+
 });
+
 
 gulp.task('clean', function(callback) {
 	$.del = require('del');
 	return $.del([destFolder]);
 });
 
-gulp.task('build', gulp.series('assets', 'sass', gulp.parallel('html', 'webpack')));
+gulp.task('build', gulp.series('assets', 'sass', 'html'));
 
 
 //PUBLIC TASKS
@@ -255,11 +257,14 @@ gulp.task('prod-css', gulp.series('sass', 'modifyCssUrls'));
 
 //development
 
+// run prod and hot-reload servers
+gulp.task('servers', gulp.parallel('webpack-server', 'server'));
+
 // gulp start - very first start to build the project and run server in 'dev' folder
-gulp.task('start', gulp.series('clean', 'build', gulp.parallel('server', 'watch')));
+gulp.task('start', gulp.series('clean', 'build', 'servers'));
 
 // gulp - just run server in 'dev' folder
-gulp.task('default', gulp.parallel('server', 'watch'));
+gulp.task('default', gulp.parallel('servers'));
 
 
 
