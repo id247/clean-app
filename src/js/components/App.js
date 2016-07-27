@@ -10,25 +10,32 @@ class App extends React.Component {
 
 
 	render() {	
-		const { profile } = this.props;
+		const { props } = this;
 
-		const users = !profile.loggedIn 
-							? null 
-							: <Users />;
+		const users = props.profile.loggedIn ? <Users /> : null ;
 
 		return (
 			<div>				
-				<Login />
+				<Login 
+					profile={props.profile}
+				/>
 				{users}
-				<Loading />
+				<Loading 
+					loading={props.loading}
+				/>
 			</div>
 		);
 	}
 
 };
 
+App.propTypes = {
+
+};
+
 const mapStateToProps = (state, ownProps) => ({
 	profile: state.profile,
+	loading: state.loading,
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({ 

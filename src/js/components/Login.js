@@ -14,8 +14,11 @@ const Login = (props) => (
 	</div>
 );
 
+Login.propTypes = {
+	profile: React.PropTypes.object.isRequired,
+};
+
 const mapStateToProps = (state, ownProps) => ({
-	profile: state.profile,
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({ 

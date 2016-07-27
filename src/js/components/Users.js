@@ -1,6 +1,5 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 
 import * as apiActions from '../actions/api';
 
@@ -16,6 +15,9 @@ const Users = (props) => (
 		</ul>		
 	</div>
 );
+
+Users.propTypes = {
+};
 
 const mapStateToProps = (state, ownProps) => ({
 	users: state.api.users,

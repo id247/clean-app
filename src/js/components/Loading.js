@@ -1,12 +1,11 @@
 import React from 'react';
-import { connect } from 'react-redux';
 
 const Loading = (props) => (
 	<div style={{float: 'right'}}>{ props.loading ? 'Loading' : '' }</div>
 );
 
-const mapStateToProps = (state, ownProps) => ({
-	loading: state.loading,
-});
+Loading.propTypes = {
+	loading: React.PropTypes.bool.isRequired,
+};	
 
-export default connect(mapStateToProps, null)(Loading);
+export default Loading;
