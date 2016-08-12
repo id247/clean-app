@@ -39,6 +39,7 @@
     "gulp-util": "latest",
     "gulp-watch": "latest",
     "gulp.spritesmith": "latest",
+    "hellojs": "^1.13.4",
     "js-cookie": "^2.1.0",
     "mocha": "^2.5.3",
     "react": "^15.1.0",

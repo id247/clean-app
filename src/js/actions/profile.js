@@ -48,14 +48,15 @@ export function profileLogin() {
 	return dispatch => {
 		dispatch(profileAsyncStart());
 		
-		return OAuth.auth()
+		return OAuth.login()
 		.then( () => {
-			API.setToken(OAuth.getToken());
 			dispatch(profileLoggedIn());
 			dispatch(profileGetUser());
 			dispatch(profileAsyncSuccess());
 		})
-		.catch( (err) => {
+		.then( 
+		null,
+		(err) => {
 			console.error(err);
 			dispatch(profileAsyncFail());
 		});
@@ -64,23 +65,36 @@ export function profileLogin() {
 
 export function profileLogout() {
 	return dispatch => {
-		OAuth.deleteToken();
-		API.deleteToken();
+		OAuth.logout();
 		dispatch(profileLoggedOut());
 		dispatch(profileUnsetUser());
 	}
 };
 
 export function profileInit() {
-	return dispatch => {	
-		if (OAuth.getToken()){	
+	return dispatch => {
+		dispatch(profileAsyncStart());
+
+		console.log('init', API);
+		
+		return API.getUser('me')
+		.then( user => {
+			console.log(user);
+			dispatch(profileSetUser(user));
 			dispatch(profileLoggedIn());
-			dispatch(profileGetUser());
-		}else{
-			dispatch(profileLogout());
-		}
+			dispatch(profileAsyncSuccess());
+		})
+		.catch( 
+			err =>{
+				console.error(err);
+				dispatch(profileUnsetUser());
+				dispatch(profileLogout());
+				dispatch(profileAsyncFail());
+			}
+		);
 	}
 };
+
 
 
 export const PROFILE_SET_USER = 'PROFILE_SET_USER';
@@ -98,20 +112,3 @@ export function profileUnsetUser() {
 	}
 };
 
-export function profileGetUser() {
-	return dispatch => {
-		dispatch(profileAsyncStart());
-		
-		return API.getUserAjax('me')
-		.then( user => {
-			dispatch(profileSetUser(user));
-			dispatch(profileAsyncSuccess());
-		})
-		.catch( (err) => {
-			console.error(err);
-			dispatch(profileUnsetUser());
-			dispatch(profileLogout());
-			dispatch(profileAsyncFail());
-		});
-	}
-};

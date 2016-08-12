@@ -1,6 +1,7 @@
 'use strict'
 
 import cookies from 'js-cookie';
+import hello from 'hellojs';
 
 export default (function DnevnikOAuth(){
 
