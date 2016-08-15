@@ -3,12 +3,17 @@
 var path = require('path');
 var webpack = require('webpack');
 
+var appSettings = path.join(__dirname, 'src/js/settings/dnevnik.js');
+
 module.exports = {
 	cache: true,
-	entry: ['babel-polyfill', './src/js'],
+	entry: {
+		dnevnik: ['babel-polyfill', './src/js/index'],
+		modal: ['./src/js/modal'],
+	},
 	output: {
 		path: path.join(__dirname, '/production/assets/js'),
-		filename: 'dnevnik.js',
+		filename: '[name].js',
 		publicPath: path.join(__dirname, '/production/assets/js'),
 		pathinfo: true
 	},
@@ -17,6 +22,7 @@ module.exports = {
 		modulesDirectories: ['node_modules', 'my_modules'],
 		extentions: ['', '.js'],
 		alias: {
+			appSettings: appSettings,
 		}
 	},
 

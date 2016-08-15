@@ -51,7 +51,7 @@ export function profileLogin() {
 		return OAuth.login()
 		.then( () => {
 			dispatch(profileLoggedIn());
-			dispatch(profileGetUser());
+			dispatch(profileInit());
 			dispatch(profileAsyncSuccess());
 		})
 		.then( 
@@ -74,9 +74,7 @@ export function profileLogout() {
 export function profileInit() {
 	return dispatch => {
 		dispatch(profileAsyncStart());
-
-		console.log('init', API);
-		
+	
 		return API.getUser('me')
 		.then( user => {
 			console.log(user);
@@ -84,16 +82,25 @@ export function profileInit() {
 			dispatch(profileLoggedIn());
 			dispatch(profileAsyncSuccess());
 		})
-		.catch( 
-			err =>{
-				console.error(err);
-				dispatch(profileUnsetUser());
-				dispatch(profileLogout());
-				dispatch(profileAsyncFail());
-			}
-		);
+		.catch( err => {
+			dispatch(catchError(err));
+		});
 	}
 };
+
+
+export function catchError(err){
+	console.error(err);
+	return dispatch => {	
+		if (err.message === 'Unauthorized'){
+			dispatch(profileLogout());
+		}else{
+			//dispatch(errorActions.setError(err.message));
+			//dispatch(pageActions.setPageWithoutHistory('error'));
+		}
+		dispatch(profileAsyncFail());
+	}
+}
 
 
 

@@ -3,9 +3,14 @@
 var path = require('path');
 var webpack = require('webpack');
 
+var appSettings = path.join(__dirname, 'src/js/settings/mosreg.js');
+
 module.exports = {
 	cache: true,
-	entry: ['babel-polyfill', './src/js'],
+	entry: {
+		mosreg: ['babel-polyfill', './src/js/index'],
+		modal: ['./src/js/modal'],
+	},
 	output: {
 		path: path.join(__dirname, '/production/assets/js'),
 		filename: 'mosreg.js',
@@ -17,6 +22,7 @@ module.exports = {
 		modulesDirectories: ['node_modules', 'my_modules'],
 		extentions: ['', '.js'],
 		alias: {
+			appSettings: appSettings,
 		}
 	},
 

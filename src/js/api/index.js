@@ -1,7 +1,7 @@
 'use strict';
 
 import hello from '../../../node_modules/hellojs/dist/hello.js';
-//import hello from 'hellojs';
+
 import { OAuthOptions } from 'appSettings';
 
 hello.init({
@@ -52,21 +52,18 @@ hello.init({
 
 const dnevnik = hello('dnevnik');
 
-function realPromise(options){
+
+//promisewrapper to use 'catch' errors in promise chain
+function sendRequest(options){
 	return new Promise( (resolve, reject) => {
-		options.callback = function(data){
-			console.log(data);
-
-			resolve(data);
-		};
-
-		dnevnik.api(options.url)
+		dnevnik.api(options)
 		.then(
 			res => {
-				console.log(res.type);
+				console.log(res);
 				switch(res.type){
 					case 'tokenRequired':
-						reject(res.description);
+					case 'invalidToken':
+						reject(new Error('Unauthorized'));
 						break;
 					default:
 						resolve(res);
@@ -74,7 +71,7 @@ function realPromise(options){
 			},
 			err => {
 				console.error(err);
-				reject(err);
+				reject(new Error('Unknown Error'));
 			}
 		);
 	});
@@ -92,10 +89,10 @@ export const OAuth = {
 export const API = {
 	getUser: (userId = 'me') => {
 		const options = {
-			url: 'users/' + userId
+			path: 'users/' + userId
 		};
 
-		return realPromise(options);
+		return sendRequest(options);
 	},
 } 
 
