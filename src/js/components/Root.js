@@ -1,22 +1,21 @@
 import React from 'react';
 import { Provider, connect } from 'react-redux';
 
-import { bindActionCreators } from 'redux';
-import * as profileActions from '../actions/profile';
-import App from '../components/App';
+import Loading from '../components/loading/Loading';
+import Router from '../components/Router';
 
 class Root extends React.Component {
 
-	componentWillMount() {
-		const { dispatch } = this.props.store;
-
-		dispatch(profileActions.profileInit());		
-	}
-
-	render() {
+	render() {		
 		return (
 			<Provider store={this.props.store}>
-				<App />
+				<div className="app__content">
+					<Router index="index" />
+					<Loading 
+						mixClass="app__loading"
+						visibleClass="app__loading--visible"
+					/>
+				</div>
 			</Provider>
 		);
 	}

@@ -1,13 +1,18 @@
 import { combineReducers } from 'redux';
 
-import { profile } from './profile';
+import { init } from './init';
+import { page } from './page';
+import { error } from './error';
+import { user } from './user';
 import { loading } from './loading';
-import { api } from './api';
+import { users } from './users';
 
 const rootReducer = combineReducers({
-	profile,
-	loading,
-	api,
+	init,
+	page,
+	error,
+	user,
+	users,
 });
 
 export default rootReducer;

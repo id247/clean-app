@@ -1,72 +1,161 @@
-import { API } from '../api';
+import { OAuth, API } from '../api';
 
-export const API_ASYNC_START 	= 'API_ASYNC_START';
-export const API_ASYNC_SUCCESS 	= 'API_ASYNC_SUCCESS';
-export const API_ASYNC_FAIL 	= 'API_ASYNC_FAIL';
-
-export function apiAsyncStart() {
-	return {
-		type: API_ASYNC_START,
-		meta: {
-			loading: true
-		}
-	}
-}
-export function apiAsyncSuccess() {
-	return {
-		type: API_ASYNC_SUCCESS,
-		meta: {
-			loading: false
-		}
-	}
-}
-export function apiAsyncFail() {
-	return {
-		type: API_ASYNC_FAIL,
-		meta: {
-			loading: false
-		}
-	}
-}
+import * as initActions from '../actions/init';
+import * as pageActions from '../actions/page';
+import * as loadingActions from '../actions/loading';
+import * as errorActions from '../actions/error';
+import * as userActions from '../actions/user';
+import * as schoolsActions from '../actions/schools';
+import * as classesActions from '../actions/classes';
+import * as usersActions from '../actions/users';
 
 
-export const API_ADD_USER = 'API_ADD_USER';
-
-export function apiSetUser(payload) {
-	return {
-		type: API_ADD_USER,
-		payload: payload
-	}
-}
-
-
-export function apiGetUser(userId) {
-	return dispatch => {	
-		dispatch(apiAsyncStart());
-				
-		return API.getUser( userId )
-		.then( user => {
-			console.log(user);
-			dispatch(apiSetUser(user));
-			dispatch(apiAsyncSuccess());
-		})
-		.catch( err => {
-			dispatch(catchError(err));
-		});
-	}
-};
+//error handler
 
 export function catchError(err){
 	console.error(err);
 	return dispatch => {	
 		if (err.message === 'Unauthorized'){
-			//dispatch(logout());
-			//dispatch(pageActions.setPageWithoutHistory('login'));
+			dispatch(logout());
+			dispatch(pageActions.setPageWithoutHistory('login'));
 		}else{
-			//dispatch(errorActions.setError(err.message));
-			//dispatch(pageActions.setPageWithoutHistory('error'));
+			dispatch(errorActions.setError(err.message));
+			dispatch(pageActions.setPageWithoutHistory('error'));
 		}
-		dispatch(apiAsyncFail());
+		dispatch(loadingActions.loadingHide());
+	}
+}
+
+// authorisation
+
+export function login() {
+	return dispatch => {
+		dispatch(loadingActions.loadingShow());
+		
+		return OAuth.login()
+		.then( () => {
+			dispatch(init());
+			dispatch(loadingActions.loadingHide());	
+		})
+		.catch( (err) => {
+			console.error(err);
+			dispatch(loadingActions.loadingHide());
+		});
+	}
+}
+
+export function logout() {
+	return dispatch => {
+		OAuth.logout();
+		dispatch(userActions.userUnset());
+	}
+}
+
+//user
+
+export function getUser(userId) {
+	return dispatch => {	
+		dispatch(loadingActions.loadingShow());
+				
+		return API.getUser(userId)
+		.then( user => {
+			dispatch(loadingActions.loadingHide());
+		})
+		.catch( err => {
+			dispatch(loadingActions.loadingHide());
+		});
+	}
+}
+
+export function setUser(user){
+	return dispatch => {	
+		if (!user){
+			throw new Error('no-user');
+		}
+
+		if (!user.roles || user.roles.indexOf('EduStaff') === -1){
+			throw new Error('teachers-only');
+		}
+
+		dispatch(userActions.userSet(user));	
+	}
+}
+
+
+//users
+
+export function usersGetUser(userId) {
+	return dispatch => {	
+		dispatch(loadingActions.loadingShow());
+				
+		return API.getUser(userId)
+		.then( user => {
+			dispatch(usersActions.usersListAdd(user));
+			dispatch(loadingActions.loadingHide());
+		})
+		.catch( err => {
+			dispatch(loadingActions.loadingHide());
+		});
+	}
+}
+
+//schools
+
+export function setSchools(schools){
+	return dispatch => {	
+		if (schools.length === 0){
+			throw new Error('no-schools');
+		}
+		dispatch(schoolsActions.setList(schools));
+	}
+}
+
+export function setSchoolsCurrent(schoolId){
+	return dispatch => {	
+		dispatch(schoolsActions.setCurrent(schoolId));
+	}
+}
+
+//classes
+
+export function getSchoolClasses(schoolId){
+	return dispatch => {
+		dispatch(loadingActions.loadingShow());	
+		
+		API.getSchoolClasses(schoolId)
+		.then( classes => {
+			dispatch(setSchoolClases(classes));
+			dispatch(loadingActions.loadingHide());
+		})
+		.catch( err => {
+			console.error(err);
+			dispatch(setSchoolClases([]));
+			dispatch(loadingActions.loadingHide());
+		});
+	}
+}
+
+export function setSchoolClases(classes){
+	return dispatch => {	
+		dispatch(classesActions.setList(classes));
+	}
+}
+
+//init
+
+export function init() {
+	return dispatch => {
+		dispatch(loadingActions.loadingShow());	
+		
+		return API.getUser('me')
+		.then( user => {
+			dispatch(setUser(user));
+			dispatch(initActions.apiInitialDataLoaded());
+			dispatch(loadingActions.loadingHide());
+		})
+		.catch( err => {
+			dispatch(catchError(err));
+		});
 	}
 }
 
