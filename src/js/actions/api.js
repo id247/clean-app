@@ -34,7 +34,7 @@ export function login() {
 		
 		return OAuth.login()
 		.then( () => {
-			dispatch(init());
+			dispatch(pageActions.setPageWithoutHistory('index'));
 			dispatch(loadingActions.loadingHide());	
 		})
 		.catch( (err) => {
@@ -92,9 +92,9 @@ export function usersGetUser(userId) {
 		.then( user => {
 			dispatch(usersActions.usersListAdd(user));
 			dispatch(loadingActions.loadingHide());
-		})
+		})		
 		.catch( err => {
-			dispatch(loadingActions.loadingHide());
+			dispatch(catchError(err));
 		});
 	}
 }
