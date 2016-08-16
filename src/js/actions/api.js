@@ -36,8 +36,7 @@ export function login() {
 		.then( () => {
 			dispatch(pageActions.setPageWithoutHistory('index'));
 			dispatch(loadingActions.loadingHide());	
-		})
-		.catch( (err) => {
+		},(err) => {
 			console.error(err);
 			dispatch(loadingActions.loadingHide());
 		});
@@ -48,6 +47,7 @@ export function logout() {
 	return dispatch => {
 		OAuth.logout();
 		dispatch(userActions.userUnset());
+		dispatch(pageActions.setPageWithoutHistory('login'));
 	}
 }
 

@@ -22,6 +22,9 @@ class Index extends React.Component {
 		return(
 			<div className={( (props.mixClass ? props.mixClass : '') + ' app-page')}>
 				{content}
+				<div style={{float: 'right'}}>
+					<button onClick={props.logout}>logout</button>
+				</div>
 			</div>
 		);
 	}
@@ -34,6 +37,7 @@ const mapStateToProps = (state, ownProps) => ({
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
 	init: () => dispatch(apiActions.init()), 
+	logout: () => dispatch(apiActions.logout()), 
 });
 
 Index.propTypes = {
