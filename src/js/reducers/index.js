@@ -1,18 +1,15 @@
 import { combineReducers } from 'redux';
 
-import { init } from './init';
-import { page } from './page';
 import { error } from './error';
 import { user } from './user';
 import { loading } from './loading';
-import { users } from './users';
+import { page } from './page';
 
 const rootReducer = combineReducers({
-	init,
-	page,
 	error,
+	loading,
 	user,
-	users,
+	page,
 });
 
 export default rootReducer;

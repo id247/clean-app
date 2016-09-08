@@ -1,23 +1,27 @@
 'use strict';
 
-var gulp = require('gulp');
-var $ = require('gulp-load-plugins')(); //lazy load some of gulp plugins
+const gulp = require('gulp');
+const $ = require('gulp-load-plugins')(); //lazy load some of gulp plugins
 
-var fs = require('fs');
-var watch = require('gulp-watch');
-var spritesmith = require('gulp.spritesmith');
-var posthtml = require('gulp-posthtml');
+const fs = require('fs');
+const spritesmith = require('gulp.spritesmith');
+const revHash = require('rev-hash');
+const del = require('del');
 
-var devMode = process.env.NODE_ENV || 'development';
+const webpack = require('webpack');
+const webpackConfig = require('./webpack.config.js');
 
-var destFolder = devMode === 'development' ? 'dev' : 'production';
+const devMode = process.env.NODE_ENV || 'development';
 
-var packageJson = JSON.parse(fs.readFileSync('./package.json'));
+const destFolder = devMode === 'development' ? 'development' : 'production';
 
-var CDN = packageJson.cdn;
+const packageJson = JSON.parse(fs.readFileSync('./package.json'));
+
+const CDN = packageJson.cdn;
 
 if (!CDN){
-	console.error('SET THE CDN!!!');
+	console.error('SET THE CDN!!! in package.json');
+	process.exit();
 }
 
 // STYLES
@@ -32,20 +36,19 @@ gulp.task('sass', function () {
 			cascade: false
 		}))
 		.pipe($.cssImageDimensions())
+		.on('error', $.notify.onError())
 		.pipe($.if(devMode !== 'production', $.sourcemaps.write())) 
 		.pipe(gulp.dest(destFolder + '/assets/css'));  
 });
 
 // image urls
 gulp.task('modifyCssUrls', function () {
-	fs = require('fs');
-	$.revHash = require('rev-hash');
 
 	return gulp.src(destFolder + '/assets/css/style.css')
 		.pipe($.modifyCssUrls({
 			modify: function (url, filePath) {
-				var buffer = fs.readFileSync(url.replace('../', destFolder + '/assets/'));				
-				return url + '?_v=' + $.revHash(buffer);
+				const buffer = fs.readFileSync(url.replace('../', destFolder + '/assets/'));				
+				return url + '?_v=' + revHash(buffer);
 			},
 		}))		
 		.pipe($.minifyCss({compatibility: 'ie8'}))
@@ -66,7 +69,7 @@ gulp.task('assets-favicon', function(){
 });
 gulp.task('sprite', function(callback) {
 
-	var spriteData = 
+	const spriteData = 
 		gulp.src('src/assets/sprite/*.png') // путь, откуда берем картинки для спрайта
 		.pipe(spritesmith({
 			imgName: 'sprite.png',
@@ -89,46 +92,84 @@ gulp.task('assets', gulp.parallel('assets-files', 'assets-favicon', 'sprite'));
 // HTML
 gulp.task('html', function(callback){
 
-	function html(folder) {
-
-		var newDestFolder = destFolder + (folder !== 'local' ? '/' + folder : '');
-
-		return gulp.src([
-			'src/html/index/**/*.html', 
-			'src/html/*.html', 
-			'!src/html/index/**/_*.html',
-			'!src/html/_*.html', 
-			])
-			.pipe($.fileInclude({
-				prefix: '@@',
-				basepath: '@file',
-				context: {
-					'server': folder
-				},
-				indent: true
-			}))
-			.on('error', $.notify.onError())
-			.pipe($.if(devMode === 'production', $.htmlmin({collapseWhitespace: true})))
-			.pipe(gulp.dest(newDestFolder));
+	const servers = {
+		development: [
+			'local',
+		],
+		production: [
+			'dnevnik',
+			'staging',
+		],
 	}
+
+	const currentServers = servers[devMode];
 	
-	if (devMode == 'development'){
-		html('local');
-	}else{
-		html('mosreg');
-		html('dnevnik');
+	if (!currentServers){
+		callback();
+		return false;
 	}
 
-	setTimeout( ()=> { //to let write files
-		callback();
-	},300);
+	currentServers.map( (server, i) => {
+		html(server, () => {
+			if (i === currentServers.length - 1){
+				callback();
+			}
+		});
+	});
+
+	function html(server, callback) {
+
+		let newDestFolder = destFolder;
+
+		if (server !== 'local'){
+			newDestFolder += '/' + server;
+		}
+
+		const files = [
+			'src/html/*.html'
+		];
+
+		if (server !== 'local'){
+			files.push('!src/html/oauth.html');
+		}
+
+		return gulp.src(files)
+		.pipe($.fileInclude({
+			prefix: '@@',
+			basepath: '@file',
+			context: {
+				server: server,
+				role: false,
+				forum: false,
+				manualLink: 'https://ad.csdnevnik.ru/special/staging/dove/download/dove-self-esteem.pdf',
+				downloadClick: 'ga(\'send\', \'event\', \'Мануал\', \'Скачивание\');', 
+				missionClick: 'ga(\'send\', \'event\', \'Миссия Dove\', \'Переход\');', 
+				videoClick: 'ga(\'send\', \'event\', \'Видео One thing\', \'Просмотр\');', 
+				videoMomsClick: 'ga(\'send\', \'event\', \'Видео Влияние\', \'Просмотр\');', 
+				momQuizClick: 'ga(\'send\', \'event\', \'Тест\', \'Прохождение\');', 
+				selfConfidenceClick: 'ga(\'send\', \'event\', \'Статья (Как повысить)\', \'Переход\');', 
+				daughterConfidenceClick: 'ga(\'send\', \'event\', \'Статья (Как помочь)\', \'Переход\');', 
+				behaviorClick: 'ga(\'send\', \'event\', \'Статья (Как поведение)\', \'Переход\');', 
+				forumMomsClick: 'ga(\'send\', \'event\', \'Форум (Мамы)\', \'Переход\');', 
+				forumGirlsClick: 'ga(\'send\', \'event\', \'Форум (Дочки)\', \'Переход\');', 
+				girlsQuizClick: 'ga(\'send\', \'event\', \'Опрос\', \'Прохождение\');', 
+				standartsClick: 'ga(\'send\', \'event\', \'Статья (Как менялись)\', \'Переход\');', 
+				celebritiesClick: 'ga(\'send\', \'event\', \'Статья (Чего стеснялись)\', \'Переход\');', 
+				habbitsClick: 'ga(\'send\', \'event\', \'Статья (Какие привычки)\', \'Переход\');', 
+				competitionClick: 'ga(\'send\', \'event\', \'Конкурс\', \'Переход\');', 
+			},
+			indent: true
+		}))
+		.on('error', $.notify.onError())
+		.pipe($.if(devMode === 'production', $.htmlmin({collapseWhitespace: true})))
+		.pipe(gulp.dest(newDestFolder))
+		.on('end', callback);
+	};
 
 });
 
 //set new images,css and js hash versions
 gulp.task('vers', function(){	
-
-	$.revHash = require('rev-hash');
 
 	const plugins = [
 		function relativeLinks(tree) {
@@ -167,7 +208,7 @@ gulp.task('vers', function(){
 	];
 
 	function getVersion(file){
-		return fs.existsSync(destFolder + '/' + file) && $.revHash(fs.readFileSync(destFolder + '/' +  file));
+		return fs.existsSync(destFolder + '/' + file) && revHash(fs.readFileSync(destFolder + '/' +  file));
 	}
 
 	function setVestion(node, attrName){
@@ -187,16 +228,29 @@ gulp.task('vers', function(){
 		return node;
 	}
 
-	return gulp.src([destFolder + '/{dnevnik,mosreg}/*.html'])
-		.pipe(posthtml(plugins))
+	return gulp.src([destFolder + '/{dnevnik,staging}/*.html'])
+		.pipe($.posthtml(plugins))
 		.on('error', $.notify.onError())
 		.pipe(gulp.dest(destFolder));
 
 });
 
 //JS
+// gulp.task('webpack', function(callback) {
+
+// 	const myConfig = Object.create(webpackConfig);
+
+// 	webpack(myConfig, 
+// 	function(err, stats) {
+// 		if(err) throw new $.util.PluginError('webpack', err);
+// 		$.util.log('[webpack]', stats.toString({
+// 			// output options
+// 		}));
+// 		callback();
+// 	});
+// });
+
 gulp.task('webpack-server', function(callback) {
-	var webpack = require('webpack');
 	var config = require('./webpack.config.js');
 
 	var WebpackDevServer = require('webpack-dev-server');
@@ -217,26 +271,24 @@ gulp.task('webpack-server', function(callback) {
 
 // BUILD
 gulp.task('server', function () {
-	$.server = require('gulp-server-livereload');
-
 	gulp.src(destFolder)
-	.pipe($.server({
+	.pipe($.serverLivereload({
 		livereload: true,
 		directoryListing: false,
 		open: false,
 		port: 9000
 	}));
-
+	
 	gulp.watch('src/sass/**/*.scss', gulp.series('sass'));
 	gulp.watch('src/assets/**/*', gulp.series('assets'));
+	//gulp.watch(['src/base-js/**/*.js'], gulp.series('webpack'));
 	gulp.watch('src/html/**/*.html', gulp.series('html'));
 
 });
 
 
-gulp.task('clean', function(callback) {
-	$.del = require('del');
-	return $.del([destFolder]);
+gulp.task('clean', function() {
+	return del([destFolder]);
 });
 
 gulp.task('build', gulp.series('assets', 'sass', 'html'));
@@ -260,10 +312,10 @@ gulp.task('prod-css', gulp.series('sass', 'modifyCssUrls'));
 // run prod and hot-reload servers
 gulp.task('servers', gulp.parallel('webpack-server', 'server'));
 
-// gulp start - very first start to build the project and run server in 'dev' folder
+// gulp start - very first start to build the project and run server in 'development' folder
 gulp.task('start', gulp.series('clean', 'build', 'servers'));
 
-// gulp - just run server in 'dev' folder
+// gulp - just run server in 'development' folder
 gulp.task('default', gulp.parallel('servers'));
 
 
