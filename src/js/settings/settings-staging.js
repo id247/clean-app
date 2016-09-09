@@ -23,12 +23,12 @@
 
 
 export const OAuthOptions = {
+	provider: 'app',
 	authUrl: 'https://login.dnevnik.ru/oauth2',
 	grantUrl: 'https://api.dnevnik.ru/v1/authorizations',
 	scope: 'Avatar,FullName,Birthday,Age,Roles,Files,Sex',	
 	clientId: 'f84accc763e34b5b83469c9ef1a9ea62',
 	redirectUrl: 'https://ad.dnevnik.ru/promo/oauth2',
-	redirectUrlMobile: 'https://ad.dnevnik.ru/promo/hidden-forum',
 }
 
 export const APIoptions = {	
