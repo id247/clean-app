@@ -11,8 +11,6 @@
 	<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 	<link rel="icon" href="/favicon.ico" type="image/x-icon">
 
-	<link href='https://fonts.googleapis.com/css?family=PT+Sans:400,700,400italic&amp;subset=latin,cyrillic' rel='stylesheet' type='text/css'>
-
 	<link rel="stylesheet" href="assets/css/style.css">
 
 	<!--[if lt IE 9]>
@@ -20,6 +18,12 @@
 	<![endif]-->
 	
 	@@if (server !== "local"){
+	<script>		
+		if (location.href.indexOf('http://') > -1){
+			location.href = location.href.replace('http:', 'https:');
+		}
+	</script>
+
 	<script>
 	  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
 	  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
