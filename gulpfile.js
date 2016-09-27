@@ -82,9 +82,9 @@ gulp.task('sprite', function(callback) {
 	spriteData.img
 		.pipe(gulp.dest(destFolder + '/assets/images/'))
 
-	spriteData.css.pipe(gulp.dest('src/sass/'));
+	spriteData.css.pipe(gulp.dest('src/sass/'))
+	.on('end', callback);
 
-	callback();
 });
 gulp.task('assets', gulp.parallel('assets-files', 'assets-favicon', 'sprite'));
 
