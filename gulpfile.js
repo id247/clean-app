@@ -98,6 +98,7 @@ gulp.task('html', function(callback){
 		],
 		production: [
 			'dnevnik',
+			'mosreg',
 			'staging',
 		],
 	}
