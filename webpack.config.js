@@ -116,7 +116,7 @@ const config = {
 		cache: true,
 		entry: {
 			[server]: [
-				'babel-polyfill', 
+				//'babel-polyfill', 
 				'whatwg-fetch',
 				'./src/js/index',
 			],
@@ -147,7 +147,7 @@ const config = {
 		cache: true,
 		entry: {
 			[server]: [
-				'babel-polyfill', 
+				//'babel-polyfill', 
 				'whatwg-fetch',
 				'./src/js/index',
 			],
