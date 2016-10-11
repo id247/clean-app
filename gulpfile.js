@@ -32,7 +32,7 @@ gulp.task('sass', function () {
 		.pipe($.sass({outputStyle: 'expanded'})) 
 		.on('error', $.notify.onError())
 		.pipe($.autoprefixer({
-			browsers: ['> 1%'],
+			browsers: ['ie 10-11', '> 1%'],
 			cascade: false
 		}))
 		.pipe($.cssImageDimensions())
