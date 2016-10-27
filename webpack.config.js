@@ -33,6 +33,9 @@ const resolve = {
 	extentions: ['', '.js'],
 	alias: {
 		appSettings: appSettings,
+		'react-redux': configId === 'production' 
+						? path.join(__dirname, '/node_modules/react-redux/dist/react-redux.min')
+						: path.join(__dirname, '/node_modules/react-redux/dist/react-redux'),
 	}
 };
 
@@ -77,6 +80,10 @@ const plugins = {
 			warnings: false
 		}
 	}),
+	promise: new webpack.ProvidePlugin({
+        'Promise': 'es6-promise', // Thanks Aaron (https://gist.github.com/Couto/b29676dd1ab8714a818f#gistcomment-1584602)
+        'fetch': 'imports?this=>global!exports?global.fetch!whatwg-fetch'
+    }),
 };
 
 const config = {
@@ -85,7 +92,6 @@ const config = {
 		cache: true,
 		entry: {
 			[server]: [
-				'whatwg-fetch',
 				'webpack-dev-server/client?http://localhost:3000',
 				'webpack/hot/only-dev-server',
 				'./src/js',
@@ -108,7 +114,8 @@ const config = {
 			]
 		},
 		plugins: [
-			new webpack.HotModuleReplacementPlugin()
+			new webpack.HotModuleReplacementPlugin(),
+			plugins.promise,
 		],
 	},
 
@@ -116,9 +123,7 @@ const config = {
 		cache: true,
 		entry: {
 			[server]: [
-				//'babel-polyfill', 
-				'whatwg-fetch',
-				'./src/js/index',
+				'./src/js',
 			],
 		},
 		//devtool: '#inline-source-map',
@@ -138,7 +143,8 @@ const config = {
 			]
 		},
 		plugins: [  
-			//plugins.env,
+			//plugins.env,		
+			plugins.promise,
 			//plugins.uglifyJs,
 		]
 	},
@@ -147,9 +153,7 @@ const config = {
 		cache: true,
 		entry: {
 			[server]: [
-				//'babel-polyfill', 
-				'whatwg-fetch',
-				'./src/js/index',
+				'./src/js',
 			],
 		},
 		output: {
@@ -168,7 +172,8 @@ const config = {
 			]
 		},
 		plugins: [  
-			plugins.env,
+			plugins.env,			
+			plugins.promise,
 			plugins.uglifyJs,
 		]
 	}

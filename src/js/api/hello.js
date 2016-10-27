@@ -15,9 +15,11 @@ const isMobile = (function() {
 	}
 })();
 
+const provider = 'app' + OAuthOptions.clientId.substr(0, 10);
+
 hello.init({
-	[OAuthOptions.provider]: {
-		name: OAuthOptions.provider,
+	[provider]: {
+		name: provider,
 
 		oauth: {
 			version: 2,
@@ -44,10 +46,10 @@ const options = {
 };
 
 hello.init({
-	[OAuthOptions.provider] : OAuthOptions.clientId,
+	[provider] : OAuthOptions.clientId,
 },options);
 
-const dnevnik = hello(OAuthOptions.provider);
+const dnevnik = hello(provider);
 
 function getToken(){
 	const response = dnevnik && dnevnik.getAuthResponse();

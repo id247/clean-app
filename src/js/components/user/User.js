@@ -14,15 +14,12 @@ class User extends React.Component {
 
 	render(){
 		const { props } = this;
-
-		const avatar = props.profile.photoMedium ? props.profile.photoMedium : ForumOptions.anonAvatar
-
 		return(
 			<div className={( (props.mixClass ? props.mixClass : '') + ' forum-user')}>
 
 				<div className="forum-user__avatar-placeholder">
 
-					<img src={avatar} alt="" className="forum-user__avatar" />
+					<img src={props.profile.photoMedium} alt="" className="forum-user__avatar" />
 
 				</div>
 
